@@ -1,1 +1,2 @@
-
+- include_tasks: install_java.yml
+- include_tasks: compile_and_run.yml

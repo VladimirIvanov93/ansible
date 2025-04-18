@@ -1,5 +1,5 @@
 - hosts: servers
-  become: yes
+#  become: yes
   vars:
     java_repo_url: "{{ java_repo_url }}"  # URL репозитория с Java приложением
     ansible_repo_url: "{{ ansible_repo_url }}"  # URL репозитория с Ansible

@@ -2,9 +2,7 @@
   become: yes
   vars:
     java_repo_url: "{{ java_repo_url }}"  # URL репозитория с Java приложением
-    ansible_repo_url: "{{ ansible_repo_url }}"  # URL репозитория с Ansible
     java_repo_name: "{{ java_repo_url | basename | regex_replace('\\.git$', '') }}"  # Извлечение имени репозитория
-    build_dir: "/opt/{{ java_repo_name }}_build"  # Директория для сборки
     run_dir: "/opt/{{ java_repo_name }}_run"  # Директория для запуска
 
   tasks:
@@ -13,43 +11,25 @@
         name: openjdk-11-jdk
         state: present
 
-    - name: Create build directory
+    - name: Create run directory
       file:
-        path: "{{ build_dir }}"
+        path: "{{ run_dir }}"
         state: directory
 
     - name: Clone the Java application repository
       git:
         repo: "{{ java_repo_url }}"
-        dest: "{{ build_dir }}"
+        dest: "{{ run_dir }}"
         version: main
 
     - name: Compile the Java application
       shell: |
         javac simple_xml_parser/ReadXmlDomParser.java
       args:
-        chdir: "{{ build_dir }}"
-
-    - name: Check if compiled class exists
-      stat:
-        path: "{{ build_dir }}/simple_xml_parser/ReadXmlDomParser.class"
-      register: class_file
-
-    - name: Fail if compiled class does not exist
-      fail:
-        msg: "Compiled class not found!"
-      when: not class_file.stat.exists
-
-    - name: Create run directory
-      file:
-        path: "{{ run_dir }}"
-        state: directory
-
-    - name: Copy compiled class to run directory
-      copy:
-        src: "{{ build_dir }}/simple_xml_parser/ReadXmlDomParser.class"
-        dest: "{{ run_dir }}/ReadXmlDomParser.class"
+        chdir: "{{ run_dir }}"
 
     - name: Run the Java application
       shell: |
         java -cp "{{ run_dir }}" simple_xml_parser.ReadXmlDomParser
+      args:
+        chdir: "{{ run_dir }}"

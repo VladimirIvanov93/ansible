@@ -3,7 +3,7 @@
   vars:
     java_repo_url: "{{ java_repo_url }}"  # URL репозитория с Java приложением
     ansible_repo_url: "{{ ansible_repo_url }}"  # URL репозитория с Ansible
-    java_repo_name: "{{ java_repo_name }}"  # Имя Java репозитория
+    java_repo_name: "{{ java_repo_url | basename | regex_replace('\\.git$', '') }}"  # Извлечение имени репозитория
     build_dir: "/opt/{{ java_repo_name }}_build"  # Директория для сборки
     run_dir: "/opt/{{ java_repo_name }}_run"  # Директория для запуска
 

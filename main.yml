@@ -1,3 +1,50 @@
-- include_tasks: init_vars.yml
-- include_tasks: install_java.yml
-- include_tasks: compile_and_run.yml
+- hosts: java_servers
+  become: yes
+  vars:
+    java_repo_url: "{{ java_repo_url }}"  # URL репозитория с Java приложением
+    ansible_repo_url: "{{ ansible_repo_url }}"  # URL репозитория с Ansible
+    java_repo_name: "{{ java_repo_name }}"  # Имя Java репозитория
+    build_dir: "/opt/{{ java_repo_name }}_build"  # Директория для сборки
+    run_dir: "/opt/{{ java_repo_name }}_run"  # Директория для запуска
+
+  tasks:
+    - name: Install Java JDK
+      apt:
+        name: openjdk-11-jdk
+        state: present
+
+    - name: Create base directory
+      file:
+        path: "{{ base_dir }}"
+        state: directory
+
+    - name: Create build directory
+      file:
+        path: "{{ build_dir }}"
+        state: directory
+
+    - name: Clone the Java application repository
+      git:
+        repo: "{{ java_repo_url }}"
+        dest: "{{ build_dir }}"
+        version: main
+
+    - name: Compile the Java application
+      shell: |
+        javac ReadXmlDomParser.java
+      args:
+        chdir: "{{ build_dir }}"
+
+    - name: Create run directory
+      file:
+        path: "{{ run_dir }}"
+        state: directory
+
+    - name: Copy compiled class to run directory
+      copy:
+        src: "{{ build_dir }}/ReadXmlDomParser.class"
+        dest: "{{ run_dir }}/ReadXmlDomParser.class"
+
+    - name: Run the Java application
+      shell: |
+        java -cp "{{ run_dir }}" ReadXmlDomParser

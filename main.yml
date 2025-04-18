@@ -13,11 +13,6 @@
         name: openjdk-11-jdk
         state: present
 
-    - name: Create base directory
-      file:
-        path: "{{ base_dir }}"
-        state: directory
-
     - name: Create build directory
       file:
         path: "{{ build_dir }}"

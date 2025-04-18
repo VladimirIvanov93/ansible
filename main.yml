@@ -37,9 +37,9 @@
 
     - name: Copy compiled class to run directory
       copy:
-        src: "{{ build_dir }}/simple_xml_parser/ReadXmlDomParser.class"
-        dest: "{{ run_dir }}/simple_xml_parser/ReadXmlDomParser.class"
+        src: "{{ build_dir }}"
+        dest: "{{ run_dir }}"
 
     - name: Run the Java application
       shell: |
-        java -cp "{{ run_dir }}" simple_xml_parser/ReadXmlDomParser
+        java -cp "{{ run_dir }}" ReadXmlDomParser

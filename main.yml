@@ -1,4 +1,4 @@
-- hosts: java_servers
+- hosts: servers
   become: yes
   vars:
     java_repo_url: "{{ java_repo_url }}"  # URL репозитория с Java приложением

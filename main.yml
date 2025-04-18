@@ -30,6 +30,16 @@
       args:
         chdir: "{{ build_dir }}"
 
+    - name: Check if compiled class exists
+      stat:
+        path: "{{ build_dir }}/simple_xml_parser/ReadXmlDomParser.class"
+      register: class_file
+
+    - name: Fail if compiled class does not exist
+      fail:
+        msg: "Compiled class not found!"
+      when: not class_file.stat.exists
+
     - name: Create run directory
       file:
         path: "{{ run_dir }}"
@@ -38,7 +48,7 @@
     - name: Copy compiled class to run directory
       copy:
         src: "{{ build_dir }}/simple_xml_parser/ReadXmlDomParser.class"
-        dest: "{{ run_dir }}/simple_xml_parser/ReadXmlDomParser.class"
+        dest: "{{ run_dir }}/ReadXmlDomParser.class"
 
     - name: Run the Java application
       shell: |

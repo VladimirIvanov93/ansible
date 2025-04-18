@@ -39,6 +39,6 @@
 
     - name: Run the Java application
       shell: |
-        java -cp "{{ run_dir }}" simple_xml_parser.ReadXmlDomParser
+        java -cp "{{ run_dir }}" ReadXmlDomParser
       args:
         chdir: "{{ run_dir }}"

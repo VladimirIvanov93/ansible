@@ -2,8 +2,7 @@
   become: yes
   vars:
     java_repo_url: "{{ java_repo_url }}"  # URL репозитория с Java приложением
-    java_repo_name: "{{ java_repo_url | basename | regex_replace('\\.git$', '') }}"  # Извлечение имени репозитория
-    run_dir: "/opt/{{ java_repo_name }}_run"  # Директория для запуска
+    run_dir: "/opt/java_run"  # Директория для запуска
 
   tasks:
     - name: Install Java JDK
@@ -27,6 +26,16 @@
         javac simple_xml_parser/ReadXmlDomParser.java
       args:
         chdir: "{{ run_dir }}"
+
+    - name: Check if compiled class exists
+     stat:
+       path: "{{ run_dir }}/simple_xml_parser/ReadXmlDomParser.class"
+     register: class_file
+
+   - name: Fail if compiled class does not exist
+     fail:
+       msg: "Compiled class not found!"
+     when: not class_file.stat.exists
 
     - name: Run the Java application
       shell: |

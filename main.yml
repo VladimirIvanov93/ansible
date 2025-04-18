@@ -26,16 +26,16 @@
         javac simple_xml_parser/ReadXmlDomParser.java
       args:
         chdir: "{{ run_dir }}"
-
+    
     - name: Check if compiled class exists
-     stat:
-       path: "{{ run_dir }}/simple_xml_parser/ReadXmlDomParser.class"
-     register: class_file
+      stat:
+        path: "{{ run_dir }}/simple_xml_parser/ReadXmlDomParser.class"
+      register: class_file
 
-   - name: Fail if compiled class does not exist
-     fail:
-       msg: "Compiled class not found!"
-     when: not class_file.stat.exists
+    - name: Fail if compiled class does not exist
+      fail:
+        msg: "Compiled class not found!"
+      when: not class_file.stat.exists
 
     - name: Run the Java application
       shell: |

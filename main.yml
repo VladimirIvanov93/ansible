@@ -26,7 +26,7 @@
 
     - name: Compile the Java application
       shell: |
-        javac ReadXmlDomParser.java
+        javac simple_xml_parser/ReadXmlDomParser.java
       args:
         chdir: "{{ build_dir }}"
 

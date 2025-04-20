@@ -39,6 +39,6 @@
 
     - name: Run the Java application
       shell: |
-        java -cp {{ run_dir }} ReadXmlDomParser resources/wf.xml
+        java -cp {{ run_dir }} ReadXmlDomParser wf.xml
       args:
         chdir: "{{ run_dir }}"

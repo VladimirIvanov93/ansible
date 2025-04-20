@@ -23,10 +23,10 @@
 
     - name: Compile the Java application
       shell: |
-        javac simple_xml_parser/ReadXmlDomParser.java
+        cd {{ run_dir }} && javac -d . ReadXmlDomParser.java
       args:
         chdir: "{{ run_dir }}"
-    
+
     - name: Check if compiled class exists
       stat:
         path: "{{ run_dir }}/simple_xml_parser/ReadXmlDomParser.class"
@@ -39,6 +39,6 @@
 
     - name: Run the Java application
       shell: |
-        java -cp "{{ run_dir }}" ReadXmlDomParser
+        java -cp {{ run_dir }} ReadXmlDomParser resources/wf.xml
       args:
         chdir: "{{ run_dir }}"

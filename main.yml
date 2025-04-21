@@ -2,7 +2,6 @@
   become: yes
   vars:
     run_dir: "/opt/java_run"
-    java_repo_url: "https://github.com/romanborodin1/java.git"
 
   tasks:
     - name: Install Java JDK
@@ -12,7 +11,7 @@
 
     - name: Ensure the parent directory exists
       file:
-        path: "/opt/java_run"
+        path: "{{ run_dir }}"
         state: directory
         
     - name: Remove existing simple_xml_parser directory if it exists

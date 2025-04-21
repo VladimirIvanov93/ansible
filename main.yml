@@ -13,17 +13,13 @@
       file:
         path: "{{ run_dir }}"
         state: directory
-        
-    - name: Remove existing simple_xml_parser directory if it exists
-      file:
-        path: "{{ run_dir }}"
-        state: absent
 
     - name: Clone the Java application repository
       git:
         repo: "{{ java_repo_url }}"  # URL репозитория с Java приложением
         dest: "{{ run_dir }}"
         version: main
+        force: yes
 
     - name: Compile the Java application
       shell: |

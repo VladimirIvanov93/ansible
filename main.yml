@@ -9,11 +9,6 @@
         name: openjdk-11-jdk
         state: present
 
-    - name: Ensure the run directory is clean
-      file:
-        path: "{{ run_dir }}"
-        state: absent
-
     - name: Recreate the run directory
       file:
         path: "{{ run_dir }}"

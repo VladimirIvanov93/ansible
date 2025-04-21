@@ -1,7 +1,7 @@
 - hosts: servers
   become: yes
   vars:
-    run_dir: "/opt/java_run/simple_xml_parser"  # Директория для работы
+    run_dir: "/opt/java_run"  # Директория для работы - /simple_xml_parser
 
   tasks:
     - name: Install Java JDK

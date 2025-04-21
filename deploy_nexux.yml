@@ -1,90 +1,40 @@
 ---
 - name: Deploy Nexus Repository Manager
-  hosts: localhost
+  hosts: servers
   become: yes
   tasks:
     - name: Install required packages
       apt:
-        name:
-          - openjdk-11-jdk
-          - wget
-          - unzip
+        name: docker.io
         state: present
       when: ansible_os_family == "Debian"
 
-    - name: Create nexus user
-      user:
-        name: nexus
-        system: yes
-        shell: /bin/false
-        home: /opt/nexus
-
-    - name: Download Nexus Repository Manager
-      get_url:
-        url: https://download.sonatype.com/nexus/3/latest-unix.tar.gz
-        dest: /opt/nexus/latest-unix.tar.gz
-
-    - name: Extract Nexus Repository Manager
-      unarchive:
-        src: /opt/nexus/latest-unix.tar.gz
-        dest: /opt/nexus/
-        remote_src: yes
-
-    - name: Change ownership of Nexus folder
-      file:
-        path: /opt/nexus/nexus-3*
-        owner: nexus
-        group: nexus
-        state: directory
-        recurse: yes
-
-    - name: Create Nexus data directory
-      file:
-        path: /nexus-data
-        state: directory
-        owner: nexus
-        group: nexus
-
-    - name: Create a systemd service file for Nexus
-      copy:
-        dest: /etc/systemd/system/nexus.service
-        content: |
-          [Unit]
-          Description=Nexus Repository Manager
-          After=network.target
-
-          [Service]
-          Type=simple
-          User=nexus
-          ExecStart=/opt/nexus/nexus-3*/bin/nexus run
-          Restart=on-failure
-
-          [Install]
-          WantedBy=multi-user.target
-
-    - name: Reload systemd
+    - name: Ensure Docker is running
       systemd:
-        daemon_reload: yes
-
-    - name: Start and enable Nexus service
-      systemd:
-        name: nexus
+        name: docker
         state: started
         enabled: yes
 
-    - name: Update firewall rules (if using UFW)
-      ufw:
-        rule: allow
-        name: "Nexus"
-        port: 8081
+    - name: Create a volume for Nexus data
+      command: docker volume create nexus-data
 
-    - name: Ensure Nexus is running
+    - name: Run Nexus container
+      docker_container:
+        name: nexus
+        image: sonatype/nexus3
+        state: present
+        ports:
+          - "8081:8081"
+        volumes:
+          - nexus-data:/nexus-data
+        restart_policy: unless-stopped
+
+    - name: Wait for Nexus to be ready
       uri:
         url: http://localhost:8081
         return_content: yes
+        status_code: 200
       register: result
-
-    - name: Fail if Nexus did not start correctly
-      fail:
-        msg: "Nexus did not start correctly"
-      when: "'Nexus Repository Manager' not in result.content"
+      until: result is not failed
+      retries: 10
+      delay: 10

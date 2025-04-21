@@ -3,17 +3,6 @@
   hosts: servers
   become: yes
   tasks:
-    - name: Install required packages
-      apt:
-        name: docker.io
-        state: present
-      when: ansible_os_family == "Debian"
-
-    - name: Ensure Docker is running
-      systemd:
-        name: docker
-        state: started
-        enabled: yes
 
     - name: Create a volume for Nexus data
       command: docker volume create nexus-data

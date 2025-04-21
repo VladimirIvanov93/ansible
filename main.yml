@@ -9,10 +9,10 @@
         name: openjdk-11-jdk
         state: present
 
-    - name: Ensure the parent directory exists
-      file:
-        path: "{{ run_dir }}"
-        state: directory
+#    - name: Ensure the parent directory exists
+#      file:
+#        path: "{{ run_dir }}"
+#        state: directory
 
     - name: Clone the Java application repository
       git:

@@ -1,8 +1,0 @@
-- hosts: java_servers
-  become: yes
-  vars:
-    java_repo_url: "{{ java_repo_url }}"  # URL репозитория с Java приложением
-    ansible_repo_url: "{{ ansible_repo_url }}"  # URL репозитория с Ansible
-    java_file_name: "{{ java_file_name }}"  # Имя Java файла
-  roles:
-    - java

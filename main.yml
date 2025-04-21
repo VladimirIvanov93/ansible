@@ -9,10 +9,10 @@
         name: openjdk-11-jdk
         state: present
 
-    - name: Recreate the run directory
-      file:
-        path: "{{ run_dir }}"
-        state: directory
+   - name: Remove existing directory if it exists
+     file:
+       path: /opt/java_run
+       state: absent
 
     - name: Clone the Java application repository
       git:

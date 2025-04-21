@@ -3,22 +3,6 @@
   vars:
     run_dir: "/opt/java_run"  # Директория для работы - /simple_xml_parser
 
-  tasks:
-    - name: Install Java JDK
-      apt:
-        name: openjdk-11-jdk
-        state: present
-    
-    - name: Remove existing directory if it exists
-     file:
-       path: "{{ run_dir }}"
-       state: absent
-       
-    - name: Recreate the run directory
-      file:
-        path: "{{ run_dir }}"
-        state: directory
-
     - name: Clone the Java application repository
       git:
         repo: "{{ java_repo_url }}"  # URL репозитория с Java приложением

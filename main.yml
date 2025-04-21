@@ -8,8 +8,8 @@
       apt:
         name: openjdk-11-jdk
         state: present
-
-   - name: Remove existing directory if it exists
+    
+    - name: Remove existing directory if it exists
      file:
        path: "{{ run_dir }}"
        state: absent

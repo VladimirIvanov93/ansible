@@ -3,6 +3,7 @@
   vars:
     run_dir: "/opt/java_run"
     java_repo_url: "https://github.com/romanborodin1/java.git"
+    java_file_name
 
   tasks:
     - name: Install Java JDK
@@ -28,12 +29,12 @@
 
     - name: Compile the Java application
       shell: |
-        cd {{ run_dir }}/simple_xml_parser && javac ReadXmlDomParser.java
+        cd {{ run_dir }}/simple_xml_parser && javac {{ java_file_name }}
       args:
         chdir: "{{ run_dir }}/simple_xml_parser"
 
     - name: Run the Java application
       shell: |
-        cd {{ run_dir }}/simple_xml_parser && java -cp . ReadXmlDomParser wf.xml
+        cd {{ run_dir }}/simple_xml_parser && java -cp . "{{ java_file_name.rsplit('.', 1)[0] }}" wf.xml
       args:
         chdir: "{{ run_dir }}/simple_xml_parser"

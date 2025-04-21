@@ -3,7 +3,6 @@
   vars:
     run_dir: "/opt/java_run"
     java_repo_url: "https://github.com/romanborodin1/java.git"
-    java_file_name
 
   tasks:
     - name: Install Java JDK

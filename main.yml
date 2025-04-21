@@ -1,8 +1,7 @@
 - hosts: servers
   become: yes
   vars:
-    java_repo_url: "{{ java_repo_url }}"  # URL репозитория с Java приложением
-    run_dir: "/opt/java_run"  # Директория для запуска
+    run_dir: "/opt/java_run"  # Директория для работы
 
   tasks:
     - name: Install Java JDK
@@ -17,19 +16,29 @@
 
     - name: Clone the Java application repository
       git:
-        repo: "{{ java_repo_url }}"
+        repo: "{{ java_repo_url }}"  # URL репозитория с Java приложением
         dest: "{{ run_dir }}"
         version: main
 
+    - name: Check if Java file exists
+      stat:
+        path: "{{ run_dir }}/ReadXmlDomParser.java"
+      register: java_file
+
+    - name: Fail if Java file does not exist
+      fail:
+        msg: "Java file not found: {{ run_dir }}/ReadXmlDomParser.java"
+      when: not java_file.stat.exists
+
     - name: Compile the Java application
       shell: |
-        cd {{ run_dir }} && javac -d . ReadXmlDomParser.java
+        javac -d . ReadXmlDomParser.java
       args:
         chdir: "{{ run_dir }}"
 
     - name: Check if compiled class exists
       stat:
-        path: "{{ run_dir }}/simple_xml_parser/ReadXmlDomParser.class"
+        path: "{{ run_dir }}/ReadXmlDomParser.class"
       register: class_file
 
     - name: Fail if compiled class does not exist
@@ -39,6 +48,6 @@
 
     - name: Run the Java application
       shell: |
-        java -cp {{ run_dir }} ReadXmlDomParser wf.xml
+        java -cp . ReadXmlDomParser wf.xml
       args:
         chdir: "{{ run_dir }}"

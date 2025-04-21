@@ -11,8 +11,13 @@
 
    - name: Remove existing directory if it exists
      file:
-       path: /opt/java_run
+       path: "{{ run_dir }}"
        state: absent
+       
+    - name: Recreate the run directory
+      file:
+        path: "{{ run_dir }}"
+        state: directory
 
     - name: Clone the Java application repository
       git:

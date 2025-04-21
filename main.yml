@@ -1,7 +1,24 @@
 - hosts: servers
   become: yes
   vars:
-    run_dir: "/opt/java_run"  # Директория для работы - /simple_xml_parser
+    run_dir: "/opt/java_run/simple_xml_parser"
+    java_repo_url: "https://github.com/romanborodin1/java.git"
+
+  tasks:
+    - name: Install Java JDK
+      apt:
+        name: openjdk-11-jdk
+        state: present
+
+    - name: Ensure the parent directory exists
+      file:
+        path: "/opt/java_run"
+        state: directory
+        
+    - name: Remove existing simple_xml_parser directory if it exists
+      file:
+        path: "{{ run_dir }}"
+        state: absent
 
     - name: Clone the Java application repository
       git:
@@ -9,34 +26,14 @@
         dest: "{{ run_dir }}"
         version: main
 
-    - name: Check if Java file exists
-      stat:
-        path: "{{ run_dir }}/ReadXmlDomParser.java"
-      register: java_file
-
-    - name: Fail if Java file does not exist
-      fail:
-        msg: "Java file not found: {{ run_dir }}/ReadXmlDomParser.java"
-      when: not java_file.stat.exists
-
     - name: Compile the Java application
       shell: |
-        javac -d . ReadXmlDomParser.java
+        cd {{ run_dir }} && javac ReadXmlDomParser.java
       args:
         chdir: "{{ run_dir }}"
 
-    - name: Check if compiled class exists
-      stat:
-        path: "{{ run_dir }}/ReadXmlDomParser.class"
-      register: class_file
-
-    - name: Fail if compiled class does not exist
-      fail:
-        msg: "Compiled class not found!"
-      when: not class_file.stat.exists
-
     - name: Run the Java application
       shell: |
-        java -cp . ReadXmlDomParser wf.xml
+        cd {{ run_dir }} && java -cp . ReadXmlDomParser resources/wf.xml
       args:
         chdir: "{{ run_dir }}"
